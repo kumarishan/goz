@@ -1,4 +1,6 @@
-package goz
+package functional
+
+import "kumarishan/goz/collection"
 
 type Monoid[A any] interface {
 	Semigroup[A]
@@ -18,6 +20,6 @@ func (o MonoidOps[A, M]) Empty() A {
 	return o.M.Empty()
 }
 
-func (o MonoidOps[A, M]) CombineAll(iter Iterable[A]) A {
-	return FoldLeft(iter, o.Empty(), o.Combine)
+func (o MonoidOps[A, M]) CombineAll(iter collection.Iterable[A]) A {
+	return collection.FoldLeft(iter, o.Empty(), o.Combine)
 }

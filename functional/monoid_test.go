@@ -1,8 +1,9 @@
-package goz_test
+package functional_test
 
 import (
 	"fmt"
-	"kumarishan/goz"
+	"kumarishan/goz/collection"
+	"kumarishan/goz/functional"
 	"testing"
 )
 
@@ -28,10 +29,10 @@ func (SliceConcatMonoid[A]) Empty() []A {
 
 // of type Monoid[Option[A]]
 type OptionMonoid[A any] struct {
-	s goz.Semigroup[A]
+	s functional.Semigroup[A]
 }
 
-func (o OptionMonoid[A]) Combine(x goz.Option[A], y goz.Option[A]) goz.Option[A] {
+func (o OptionMonoid[A]) Combine(x functional.Option[A], y functional.Option[A]) functional.Option[A] {
 	if x.IsEmpty() {
 		return y
 	} else {
@@ -40,13 +41,13 @@ func (o OptionMonoid[A]) Combine(x goz.Option[A], y goz.Option[A]) goz.Option[A]
 			return x
 		} else {
 			yv, _ := y.Get()
-			return goz.SomeOf(o.s.Combine(xv, yv))
+			return functional.SomeOf(o.s.Combine(xv, yv))
 		}
 	}
 }
 
-func (OptionMonoid[A]) Empty() goz.Option[A] {
-	return goz.None[A]{}
+func (OptionMonoid[A]) Empty() functional.Option[A] {
+	return functional.None[A]{}
 }
 
 type NonEmptySlice[A any] struct {
@@ -74,22 +75,22 @@ func (NonEmptySliceConcatSemigroup[A]) Combine(x NonEmptySlice[A], y NonEmptySli
 
 func TestMonoid(t *testing.T) {
 	x := 1
-	var intAdd goz.Monoid[int] = IntAddMonoid{}
+	var intAdd functional.Monoid[int] = IntAddMonoid{}
 	intAdd.Combine(x, intAdd.Empty())
 	intAdd.Combine(intAdd.Empty(), x)
 
 	y := []int{1}
-	var sliceConcat goz.Monoid[[]int] = SliceConcatMonoid[int]{}
+	var sliceConcat functional.Monoid[[]int] = SliceConcatMonoid[int]{}
 	sliceConcat.Combine(y, sliceConcat.Empty())
 	sliceConcat.Combine(sliceConcat.Empty(), y)
 
-	var nonEmptySliceConcat goz.Monoid[goz.Option[NonEmptySlice[int]]] = OptionMonoid[NonEmptySlice[int]]{NonEmptySliceConcatSemigroup[int]{}}
+	var nonEmptySliceConcat functional.Monoid[functional.Option[NonEmptySlice[int]]] = OptionMonoid[NonEmptySlice[int]]{NonEmptySliceConcatSemigroup[int]{}}
 
 	p := NonEmptySlice[int]{1, []int{2, 3}}
 	q := NonEmptySlice[int]{4, []int{5, 6}}
-	op := goz.OptionOf(p)
-	oq := goz.OptionOf(q)
-	or := goz.None[NonEmptySlice[int]]{}
+	op := functional.OptionOf(p)
+	oq := functional.OptionOf(q)
+	or := functional.None[NonEmptySlice[int]]{}
 	os := nonEmptySliceConcat.Combine(op, oq)
 	o, err := os.Get()
 	fmt.Println(o)
@@ -121,7 +122,7 @@ func TestMonoid(t *testing.T) {
 
 	s := [][]int{{1, 2}, {3, 4}, {5, 6, 7}}
 
-	r := goz.MonoidOps[[]int, goz.Monoid[[]int]]{sliceConcat}.CombineAll(goz.S[[]int](s))
+	r := functional.MonoidOps[[]int, functional.Monoid[[]int]]{sliceConcat}.CombineAll(collection.Slice[[]int](s))
 	fmt.Println(r)
 
 }

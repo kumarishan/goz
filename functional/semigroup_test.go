@@ -1,7 +1,7 @@
-package goz_test
+package functional_test
 
 import (
-	"kumarishan/goz"
+	"kumarishan/goz/functional"
 	"testing"
 )
 
@@ -30,7 +30,7 @@ func TestSemigroup(t *testing.T) {
 	y := 2
 	z := 3
 
-	var intAdd goz.Semigroup[int] = IntAddSemigroup{}
+	var intAdd functional.Semigroup[int] = IntAddSemigroup{}
 
 	intAdd.Combine(x, y)
 	intAdd.Combine(x, intAdd.Combine(y, z))
@@ -40,7 +40,7 @@ func TestSemigroup(t *testing.T) {
 	q := []int{2}
 	r := []int{3}
 
-	var sliceConcat goz.Semigroup[[]int] = SliceConcatSemigroup[int]{}
+	var sliceConcat functional.Semigroup[[]int] = SliceConcatSemigroup[int]{}
 	sliceConcat.Combine(p, q)
 	sliceConcat.Combine(p, sliceConcat.Combine(q, r))
 	sliceConcat.Combine(sliceConcat.Combine(p, q), r)

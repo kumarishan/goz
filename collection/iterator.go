@@ -1,4 +1,4 @@
-package goz
+package collection
 
 ////// Iterator //////
 
@@ -33,14 +33,4 @@ type IterableOps[A any, B any, C Iterable[A], CB Iterable[B], F IterableFactory[
 type IterableFactory[A any, C Iterable[A]] interface {
 	From(source Iterable[A]) C
 	Empty() C
-}
-
-func FoldLeft[A any, B any](i Iterable[A], z B, op func(B, A) B) B {
-	var iter = i.Iterator()
-	var s = z
-	for iter.HasNext() {
-		a, _ := iter.Next()
-		s = op(s, a)
-	}
-	return s
 }

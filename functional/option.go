@@ -1,6 +1,7 @@
-package goz
+package functional
 
 import (
+	"kumarishan/goz"
 	"reflect"
 )
 
@@ -53,7 +54,7 @@ func (None[A]) IsEmpty() bool {
 }
 func (None[A]) Get() (A, error) {
 	var zero A
-	return zero, ErrNoSuchElement
+	return zero, goz.ErrNoSuchElement
 }
 func (None[A]) GetOrElse(a A) A {
 	return a
